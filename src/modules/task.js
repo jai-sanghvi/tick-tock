@@ -10,9 +10,29 @@ export default class Task {
     return task;
   }
 
-  static save(task) {
-    const tasksList = JSON.parse(localStorage.getItem("tasks")) || [];
+  static addToList(task) {
+    const tasksList = Task.list;
     tasksList.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasksList));
+    Task.list = tasksList;
+  }
+
+  static get list() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
+  }
+
+  static set list(listJSON) {
+    const listString = JSON.stringify(listJSON);
+    localStorage.setItem("tasks", listString);
+  }
+
+  static complete(taskNumber) {
+    const tasksList = Task.list;
+    if (tasksList[taskNumber].isComplete) {
+      tasksList[taskNumber].isComplete = false;
+    } else {
+      tasksList[taskNumber].isComplete = true;
+    }
+
+    Task.list = tasksList;
   }
 }

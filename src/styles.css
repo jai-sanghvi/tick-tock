@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 20% 80%;
+}
+
+main #sidebar {
+  height: 100vh;
+  background-color: aliceblue;
+}
+
+main #tasks {
+  height: 100vh;
+  background-color: antiquewhite;
+  position: relative;
+  padding: 50px;
+}
+
+#task-input {
+  position: absolute;
+  bottom: 50px;
+}
+
+.task {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.tasks-container > div {
+  display: grid;
+  gap: 10px;
+}
