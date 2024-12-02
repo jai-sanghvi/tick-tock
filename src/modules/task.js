@@ -25,7 +25,7 @@ export default class Task {
     localStorage.setItem("tasks", listString);
   }
 
-  static complete(taskNumber) {
+  static updateStatus(taskNumber) {
     const tasksList = Task.list;
     if (tasksList[taskNumber].isComplete) {
       tasksList[taskNumber].isComplete = false;
