@@ -35,3 +35,7 @@ main #tasks {
   display: grid;
   gap: 10px;
 }
+
+#tasks label, #tasks summary, #categories-container > li {
+  user-select: none;
+}

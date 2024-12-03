@@ -20,9 +20,18 @@ export default class Task {
     return JSON.parse(localStorage.getItem("tasks")) || [];
   }
 
-  static set list(listJSON) {
-    const listString = JSON.stringify(listJSON);
-    localStorage.setItem("tasks", listString);
+  static set list(tasksJSON) {
+    const tasksString = JSON.stringify(tasksJSON);
+    localStorage.setItem("tasks", tasksString);
+  }
+  
+  static get categories() {
+    return JSON.parse(localStorage.getItem("categories")) || ['default'];
+  }
+
+  static set categories(categoriesJSON) {
+    const categoriesString = JSON.stringify(categoriesJSON);
+    localStorage.setItem("categories", categoriesString);
   }
 
   static updateStatus(taskNumber) {
@@ -34,5 +43,15 @@ export default class Task {
     }
 
     Task.list = tasksList;
+  }
+
+  static addNewCategory(name) {
+    const categoriesList = Task.categories;
+    if (categoriesList.includes(name)) {
+      alert("List already exists!");
+    } else {
+      categoriesList.push(name);
+      Task.categories = categoriesList;
+    }
   }
 }

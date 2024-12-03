@@ -7,7 +7,10 @@
 </head>
 <body>
   <main>
-    <aside id="sidebar"></aside>
+    <aside id="sidebar">
+      <ul id="categories-container"></ul>
+      <button id="new-list">New list</button>
+    </aside>
     <section id="tasks">
       <div class="tasks-container">
         <div id="active-tasks"></div>
@@ -15,6 +18,7 @@
       </div>
       <form id="task-input">
         <input type="text" name="title" id="title" placeholder="Add a task" autocomplete="off">
+        <input type="hidden" name="list" id="list" value="default">
       </form>
     </section>
   </main>

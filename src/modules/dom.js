@@ -7,10 +7,47 @@ export function handleTaskInput(event) {
   const formDataObj = Object.fromEntries(formData);
   const task = Task.create(formDataObj);
   Task.addToList(task);
-  renderTasks();
+  renderTasks(formDataObj.list);
 }
 
-export function renderTasks(list) {
+export function createCategoryInput() {
+  const categoriesContainer = document.querySelector('#categories-container');
+
+  const li = document.createElement('li');
+  const form = document.createElement('form');
+  const input = document.createElement('input');
+  input.setAttribute('type', 'text');
+  input.value = "Untitled";
+
+  form.appendChild(input);
+  li.appendChild(form);
+  categoriesContainer.appendChild(li);
+
+  input.focus();
+  input.select();
+  
+  input.addEventListener("blur", callBackFn);
+  form.addEventListener("submit", callBackFn);
+
+  function callBackFn(e) {
+    if (e.type === 'submit') {e.preventDefault()};
+    input.removeEventListener("blur", callBackFn);
+    form.removeEventListener("submit", callBackFn);
+    handleCategoryInput(input.value);
+  }
+}
+
+function handleCategoryInput(categoryName) {
+  
+  if (categoryName !== '') {
+    Task.addNewCategory(categoryName);
+    changeCategory(categoryName);
+  }
+  
+  renderCategories();
+}
+
+export function renderTasks(list = "default") {
   const tasksContainer = document.querySelector('.tasks-container');
   for (let element of tasksContainer.children) {
     while (element.firstElementChild) {
@@ -26,34 +63,60 @@ export function renderTasks(list) {
   completedTasks.appendChild(summary);
 
   for (let [index, task] of Task.list.entries()) {
-    const taskElement = document.createElement('div');
-    taskElement.classList.add("task");
-    taskElement.setAttribute('data-index', index);
-
-    const completeButton = document.createElement('input');
-    completeButton.setAttribute('type', 'checkbox');
-    completeButton.id = `task-${index}`;
-    (task.isComplete) ? completeButton.checked = true : completeButton.checked = false;
-    taskElement.appendChild(completeButton);
-    completeButton.addEventListener('change', updateTaskStatus);
-
-    const taskTitle = document.createElement('label');
-    taskTitle.textContent = task.title;
-    taskTitle.setAttribute('for', `task-${index}`);
-    (task.isComplete) ? taskTitle.style.textDecorationLine = "line-through": taskTitle.style.textDecorationLine = "none";
-    taskTitle.style.userSelect = "none";
-    taskElement.appendChild(taskTitle);
-
-    if (!task.isComplete) {
-      activeTasks.appendChild(taskElement)
-    } else {
-      completedTasks.appendChild(taskElement);
+    if (task.list === list) {
+      const taskElement = document.createElement('div');
+      taskElement.classList.add("task");
+      taskElement.setAttribute('data-index', index);
+  
+      const completeButton = document.createElement('input');
+      completeButton.setAttribute('type', 'checkbox');
+      completeButton.id = `task-${index}`;
+      (task.isComplete) ? completeButton.checked = true : completeButton.checked = false;
+      taskElement.appendChild(completeButton);
+      completeButton.addEventListener('change', updateTaskStatus);
+  
+      const taskTitle = document.createElement('label');
+      taskTitle.textContent = task.title;
+      taskTitle.setAttribute('for', `task-${index}`);
+      (task.isComplete) ? taskTitle.style.textDecorationLine = "line-through": taskTitle.style.textDecorationLine = "none";
+      taskElement.appendChild(taskTitle);
+  
+      if (!task.isComplete) {
+        activeTasks.appendChild(taskElement)
+      } else {
+        completedTasks.appendChild(taskElement);
+      }
     }
   }
+}
+
+export function renderCategories() {
+  const categoriesContainer = document.querySelector('#categories-container');
+  while (categoriesContainer.firstElementChild) {
+    categoriesContainer.firstElementChild.remove();
+  }
+
+  for (let category of Task.categories) {
+    const li = document.createElement('li');
+    li.textContent = category;
+    li.setAttribute('data-category', category);
+    categoriesContainer.appendChild(li);
+    li.addEventListener("click", (event) => {
+      const category = event.target.dataset.category;
+      changeCategory(category);
+    });
+  }
+}
+
+function changeCategory(category) {
+  const listInput = document.querySelector('input[type="hidden"][name="list"]');
+  listInput.value = category;
+  renderTasks(category);
 }
 
 function updateTaskStatus(e) {
   const taskNumber = e.target.parentElement.dataset.index;
   Task.updateStatus(taskNumber);
-  renderTasks();
+  const listInput = document.querySelector('input[type="hidden"][name="list"]');
+  renderTasks(listInput.value);
 }
