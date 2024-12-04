@@ -1,8 +1,9 @@
 export default class Task {
-  constructor({ title, list = "default", isComplete = false }) {
+  constructor({ title, list = "default", isComplete = false, isImportant = false }) {
     this.title = title;
     this.list = list;
     this.isComplete = isComplete;
+    this.isImportant = isImportant;
   }
 
   static create(taskDetails) {
@@ -45,6 +46,17 @@ export default class Task {
     Task.list = tasksList;
   }
 
+  static toggleImportance(taskNumber) {
+    const tasksList = Task.list;
+    if (tasksList[taskNumber].isImportant) {
+      tasksList[taskNumber].isImportant = false;
+    } else {
+      tasksList[taskNumber].isImportant = true;
+    }
+
+    Task.list = tasksList;
+  }
+
   static addNewCategory(name) {
     const categoriesList = Task.categories;
     if (categoriesList.includes(name)) {
@@ -53,5 +65,11 @@ export default class Task {
       categoriesList.push(name);
       Task.categories = categoriesList;
     }
+  }
+
+  static remove(taskNumber) {
+    const tasksList = Task.list;
+    tasksList.splice(taskNumber, 1);
+    Task.list = tasksList;
   }
 }

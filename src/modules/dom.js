@@ -80,12 +80,23 @@ export function renderTasks(list = "default") {
       taskTitle.setAttribute('for', `task-${index}`);
       (task.isComplete) ? taskTitle.style.textDecorationLine = "line-through": taskTitle.style.textDecorationLine = "none";
       taskElement.appendChild(taskTitle);
+
+      const importanceButton = document.createElement('button');
+      importanceButton.setAttribute('type', 'button');
+      (task.isImportant) ? importanceButton.textContent = "Remove importance" : importanceButton.textContent = "Mark as important";
+      taskElement.appendChild(importanceButton);
+      importanceButton.addEventListener("click", updateImportance);
+
   
       if (!task.isComplete) {
-        activeTasks.appendChild(taskElement)
+        activeTasks.appendChild(taskElement);
       } else {
         completedTasks.appendChild(taskElement);
       }
+
+      taskElement.addEventListener("click", (e) => {
+        if (e.target === taskElement) viewTaskDetails(taskElement);
+      });
     }
   }
 }
@@ -119,4 +130,35 @@ function updateTaskStatus(e) {
   Task.updateStatus(taskNumber);
   const listInput = document.querySelector('input[type="hidden"][name="list"]');
   renderTasks(listInput.value);
+}
+
+function updateImportance(e) {
+  const taskNumber = e.target.parentElement.dataset.index;
+  Task.toggleImportance(taskNumber);
+  const listInput = document.querySelector('input[type="hidden"][name="list"]');
+  renderTasks(listInput.value);
+}
+
+function viewTaskDetails(taskElement) {
+  const index = taskElement.dataset.index;
+  const taskObj = Task.list[index];
+  
+  const taskDetailsContainer = document.createElement("dialog");
+
+  const taskTitle = document.createElement('p');
+  taskTitle.textContent = taskObj.title;
+  taskDetailsContainer.appendChild(taskTitle);
+
+  const deleteTaskButton = document.createElement('button');
+  deleteTaskButton.textContent = "Remove Task";
+  taskDetailsContainer.appendChild(deleteTaskButton);
+  deleteTaskButton.addEventListener("click", () => {
+    Task.remove(index);
+    taskDetailsContainer.remove();
+    const listInput = document.querySelector('input[type="hidden"][name="list"]');
+    renderTasks(listInput.value);
+  });
+
+  document.querySelector('body').appendChild(taskDetailsContainer);
+  taskDetailsContainer.showModal();
 }
