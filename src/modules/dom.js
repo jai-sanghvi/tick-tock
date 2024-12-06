@@ -119,6 +119,11 @@ export function renderCategories() {
   }
 }
 
+export function showDatePicker() {
+  const dueDateInput = document.querySelector('input#duedate');
+  dueDateInput.showPicker();
+}
+
 function changeCategory(category) {
   const listInput = document.querySelector('input[type="hidden"][name="list"]');
   listInput.value = category;

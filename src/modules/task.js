@@ -1,9 +1,10 @@
 export default class Task {
-  constructor({ title, list = "default", isComplete = false, isImportant = false }) {
+  constructor({ title, duedate, list = "default", isComplete = false, isImportant = false }) {
     this.title = title;
     this.list = list;
     this.isComplete = isComplete;
     this.isImportant = isImportant;
+    this.dueDate = duedate;
   }
 
   static create(taskDetails) {
