@@ -8,6 +8,7 @@ export function handleTaskInput(event) {
   const task = Task.create(formDataObj);
   Task.addToList(task);
   renderTasks(formDataObj.list);
+  renderCategories();
 }
 
 export function createCategoryInput() {
@@ -22,6 +23,7 @@ export function createCategoryInput() {
   form.appendChild(input);
   li.appendChild(form);
   categoriesContainer.appendChild(li);
+  li.classList.add('temp-category');
 
   input.focus();
   input.select();
@@ -107,11 +109,27 @@ export function renderCategories() {
     categoriesContainer.firstElementChild.remove();
   }
 
+  const currentCategory = document.querySelector('input[type="hidden"][name="list"]').value;
+
   for (let category of Task.categories) {
     const li = document.createElement('li');
     li.textContent = category;
     li.setAttribute('data-category', category);
+    li.style.position = 'relative';
+
+    let tasksInCurrentCategory = 0;
+    const tasksList = Task.list;
+    for (let task of tasksList) {
+      task.list === category ? tasksInCurrentCategory++ : null;
+    }
+    if (tasksInCurrentCategory > 0) {
+      const span = document.createElement('span');
+      span.textContent = tasksInCurrentCategory;
+      li.appendChild(span);
+    }
+
     categoriesContainer.appendChild(li);
+    (currentCategory === category) ? li.classList.add("active-category") : null;
     li.addEventListener("click", (event) => {
       const category = event.target.dataset.category;
       changeCategory(category);
@@ -128,6 +146,7 @@ function changeCategory(category) {
   const listInput = document.querySelector('input[type="hidden"][name="list"]');
   listInput.value = category;
   renderTasks(category);
+  renderCategories();
 }
 
 function updateTaskStatus(e) {
@@ -162,6 +181,7 @@ function viewTaskDetails(taskElement) {
     taskDetailsContainer.remove();
     const listInput = document.querySelector('input[type="hidden"][name="list"]');
     renderTasks(listInput.value);
+    renderCategories();
   });
 
   document.querySelector('body').appendChild(taskDetailsContainer);

@@ -4,6 +4,15 @@
   box-sizing: border-box;
 }
 
+body {
+  line-height: 1.5;
+  font-family: "Poppins", sans-serif;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
 main {
   display: grid;
   grid-template-columns: 20% 80%;
@@ -11,7 +20,26 @@ main {
 
 main #sidebar {
   height: 100vh;
-  background-color: aliceblue;
+  background-color: floralwhite;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#sidebar #new-list {
+  padding-inline: 20px;
+  padding-block: 5px;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  border-top: 1px solid rgba(100, 100, 100, 0.2);
+  display: inline-flex;
+  align-items: center;
+  column-gap: 20px;
+}
+
+#sidebar #new-list span {
+  font-size: 30px;
 }
 
 main #tasks {
@@ -36,8 +64,9 @@ main #tasks {
   gap: 10px;
 }
 
-#tasks label, #tasks summary, #categories-container > li {
+.task, .task *, #tasks summary, #categories-container > li, #new-list {
   user-select: none;
+  cursor: pointer;
 }
 
 button#date-picker-button {
@@ -51,4 +80,42 @@ input#duedate {
   width: 0px;
   height: 0px;
   visibility: hidden;
+}
+
+#sidebar #categories-container {
+  list-style-type: none;
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color:  tan transparent;
+}
+
+#categories-container li:not(.temp-category) {
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#categories-container li:hover:not(.temp-category), #categories-container li.active-category, #sidebar #new-list:hover {
+  background-color: rgba(200, 200, 200, 0.2);
+}
+
+#categories-container li > span {
+  font-size: 0.8rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  right: 10px;
+}
+
+.temp-category input {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }
