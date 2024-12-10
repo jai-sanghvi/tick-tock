@@ -39,38 +39,64 @@ main #sidebar {
 }
 
 #sidebar #new-list span {
-  font-size: 30px;
+  font-size: 1.9rem;
 }
 
 main #tasks {
   height: 100vh;
   background-color: antiquewhite;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 50px;
 }
 
-#task-input {
-  position: absolute;
-  bottom: 50px;
+.tasks-container {
+  display: grid;
+  gap: 20px;
 }
 
-.task {
-  padding: 10px;
+#task-input {
+  position: relative;
+  padding-inline: 30px;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-.tasks-container > div, .tasks-container > details {
-  display: grid;
-  gap: 10px;
+#task-input input[name="title"] {
+  padding-block: 10px;
+  padding-inline: 20px;
+  border: none;
+  width: 100%;
+  background-color: transparent;
+  outline: none;
 }
 
-.task, .task *, #tasks summary, #categories-container > li, #new-list {
-  user-select: none;
-  cursor: pointer;
+#task-input:hover, #task-input:focus-within{
+  background-color: rgba(250, 250, 250, 0.8);
+}
+
+#add-task-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding-inline: 10px;
+  font-size: 1.9rem;
 }
 
 button#date-picker-button {
-  position: relative;
+  position: absolute;
+  padding-inline: 10px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+}
+
+button#date-picker-button:hover {
+  background-color: #ffffff;
 }
 
 input#duedate {
@@ -82,11 +108,58 @@ input#duedate {
   visibility: hidden;
 }
 
+#selected-date {
+  font-size: 0.8rem;
+  color: dodgerblue;
+}
+
+.task {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.task:hover {
+  background-color: rgba(250, 250, 250, 0.8);
+}
+
+.task label {
+  display: flex;
+  flex-direction: column;
+}
+
+.task label > .duedate {
+  font-size: 0.7rem;
+}
+
+#active-tasks, #completed-tasks {
+  display: grid;
+  gap: 10px;
+}
+
+#completed-tasks .task:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.red {
+  color: red;
+}
+
+.task, .task *, #tasks summary, #categories-container > li, #new-list {
+  user-select: none;
+  cursor: pointer;
+}
+
 #sidebar #categories-container {
   list-style-type: none;
   display: grid;
   gap: 5px;
   padding: 10px;
+}
+
+#categories-container, .tasks-container {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color:  tan transparent;
@@ -117,5 +190,38 @@ input#duedate {
 .temp-category input {
   width: 100%;
   height: 100%;
+  padding: 10px;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  margin-right: 10px;
+}
+
+input[type="checkbox"]::before {
+  content: '\002610';
+  font-size: 1.8rem;
+}
+
+input[type="checkbox"]:checked::before {
+  content: '\002611';
+}
+
+.importance-button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.8rem;
+  position: absolute;
+  right: 20px;
+}
+
+.gold {
+  color: goldenrod;
+}
+
+.task-details {
+  position: relative;
+  top: 50%;
+  left: 50%;
   padding: 10px;
 }

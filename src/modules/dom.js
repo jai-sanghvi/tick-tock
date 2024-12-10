@@ -1,4 +1,5 @@
 import Task from "./task";
+import { format } from "date-fns";
 
 export function handleTaskInput(event) {
   event.preventDefault();
@@ -50,6 +51,9 @@ function handleCategoryInput(categoryName) {
 }
 
 export function renderTasks(list = "default") {
+  const listTitle = document.querySelector('#list-title');
+  listTitle.textContent = list;
+
   const tasksContainer = document.querySelector('.tasks-container');
   for (let element of tasksContainer.children) {
     while (element.firstElementChild) {
@@ -78,17 +82,45 @@ export function renderTasks(list = "default") {
       completeButton.addEventListener('change', updateTaskStatus);
   
       const taskTitle = document.createElement('label');
-      taskTitle.textContent = task.title;
       taskTitle.setAttribute('for', `task-${index}`);
-      (task.isComplete) ? taskTitle.style.textDecorationLine = "line-through": taskTitle.style.textDecorationLine = "none";
+
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = task.title;
+      (task.isComplete) ? titleSpan.style.textDecorationLine = "line-through": titleSpan.style.textDecorationLine = "none";
+      taskTitle.appendChild(titleSpan);
+
+      if (task.dueDate) {
+        const currentDate = new Date();
+        const dueDate = new Date(task.dueDate);
+        currentDate.setHours(0,0,0,0);
+        dueDate.setHours(0,0,0,0);
+        const dueDateElement = document.createElement('span');
+        dueDateElement.classList.add('duedate');
+
+        if (dueDate - currentDate  === 0) {
+          dueDateElement.textContent = "\u{1F4C5} Today";
+        } else if (dueDate - currentDate === 86400000) {
+          dueDateElement.textContent = "\u{1F4C5} Tomorrow";
+        } else if (currentDate.getFullYear() === dueDate.getFullYear()) {
+        dueDateElement.textContent = "\u{1F4C5} " + format(dueDate, "E, do MMM");
+        } else {
+          dueDateElement.textContent = "\u{1F4C5} " + format(dueDate, "E, do MMM, yyyy");
+        }
+
+        ( (dueDate - currentDate < 0) && (task.isComplete === false) ) ? dueDateElement.classList.add('red') : null;
+        taskTitle.appendChild(dueDateElement);
+      }
+      
       taskElement.appendChild(taskTitle);
 
       const importanceButton = document.createElement('button');
       importanceButton.setAttribute('type', 'button');
-      (task.isImportant) ? importanceButton.textContent = "Remove importance" : importanceButton.textContent = "Mark as important";
+      importanceButton.classList.add('importance-button');
+      (task.isImportant) ? importanceButton.textContent = "\u2605" : importanceButton.textContent = "\u2606";
+      (task.isImportant) ? importanceButton.classList.add('gold') : importanceButton.classList.remove('gold');
+      (task.isImportant) ? importanceButton.setAttribute('title', 'Remove Importance') : importanceButton.setAttribute('title', 'Mark as Important');
       taskElement.appendChild(importanceButton);
       importanceButton.addEventListener("click", updateImportance);
-
   
       if (!task.isComplete) {
         activeTasks.appendChild(taskElement);
@@ -168,6 +200,7 @@ function viewTaskDetails(taskElement) {
   const taskObj = Task.list[index];
   
   const taskDetailsContainer = document.createElement("dialog");
+  taskDetailsContainer.classList.add('task-details');
 
   const taskTitle = document.createElement('p');
   taskTitle.textContent = taskObj.title;
@@ -184,6 +217,12 @@ function viewTaskDetails(taskElement) {
     renderCategories();
   });
 
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  taskDetailsContainer.appendChild(closeButton);
+  closeButton.addEventListener('click', () => taskDetailsContainer.close());
+
   document.querySelector('body').appendChild(taskDetailsContainer);
+  taskDetailsContainer.addEventListener('close', e => e.target.remove());
   taskDetailsContainer.showModal();
 }

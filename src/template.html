@@ -15,14 +15,16 @@
       <button type="button" id="new-list"><span>&#43;</span>New list</button>
     </aside>
     <section id="tasks">
+      <h2 id="list-title"></h2>
       <div class="tasks-container">
         <div id="active-tasks"></div>
         <details id="completed-tasks" open></details>
       </div>
       <form id="task-input">
-        <input type="text" name="title" id="title" placeholder="Add a task" autocomplete="off">
+        <span id="add-task-icon">&#43;</span>
+        <input type="text" name="title" id="title" placeholder="Add a task" autocomplete="off" required>
         <input type="hidden" name="list" id="list" value="default">
-        <button type="button" id="date-picker-button">&#128197;<input type="datetime-local" name="duedate" id="duedate"></button>
+        <button type="button" id="date-picker-button" title="Add due date">&#128197;<input type="date" name="duedate" id="duedate"></button>
       </form>
     </section>
   </main>

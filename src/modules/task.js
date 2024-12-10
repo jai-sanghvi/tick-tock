@@ -19,7 +19,7 @@ export default class Task {
   }
 
   static get list() {
-    return JSON.parse(localStorage.getItem("tasks")) || [];
+    return JSON.parse(localStorage.getItem("tasks")) || [{"title":"task 1","list":"default","isComplete":false,"isImportant":false,"dueDate":"2024-12-05"},{"title":"task 2","list":"default","isComplete":false,"isImportant":false,"dueDate":"2024-12-10"},{"title":"task 3","list":"default","isComplete":false,"isImportant":false,"dueDate":"2024-12-11"},{"title":"task 4","list":"default","isComplete":false,"isImportant":false,"dueDate":"2024-12-25"},{"title":"task 5","list":"default","isComplete":false,"isImportant":false,"dueDate":"2025-01-08"},{"title":"task 6","list":"default","isComplete":true,"isImportant":false,"dueDate":"2024-12-03"}];
   }
 
   static set list(tasksJSON) {
