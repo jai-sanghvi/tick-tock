@@ -17,6 +17,7 @@ describe("Task", () => {
           description: "",
           dueDate: "2025-05-02",
           isImportant: false,
+          isComplete: false,
           checklist: [],
           list: "School",
         },
@@ -35,6 +36,7 @@ describe("Task", () => {
           description: "",
           dueDate: "2025-10-19",
           isImportant: false,
+          isComplete: false,
           checklist: [],
           list: "School",
         },
@@ -58,6 +60,7 @@ describe("Task", () => {
           description: "",
           dueDate: "",
           isImportant: false,
+          isComplete: false,
           checklist: [],
           list: "Tasks",
         },
@@ -81,6 +84,7 @@ describe("Task", () => {
           dueDate: "2025-11-15",
           description: "test task description added after modification",
           isImportant: true,
+          isComplete: true,
           checklist: [],
         },
         expectation: {
@@ -90,13 +94,15 @@ describe("Task", () => {
           list: "Tasks",
           description: "test task description added after modification",
           isImportant: true,
+          isComplete: true,
           checklist: [],
         },
       };
 
       const myTask = new Task(task.inputs);
+      myTask.update(task.modifications);
 
-      expect(myTask.update(task.modifications)).toEqual(task.expectation);
+      expect(myTask).toEqual(task.expectation);
     });
 
     it("edits task title", () => {
@@ -151,6 +157,18 @@ describe("Task", () => {
 
       task.toggleImportance();
       expect(task.isImportant).toBe(false);
+    });
+
+    it("toggles task completion", () => {
+      const task = new Task({ id: 1, title: "test task" });
+
+      expect(task.isComplete).toBe(false);
+
+      task.toggleCompletion();
+      expect(task.isComplete).toBe(true);
+
+      task.toggleCompletion();
+      expect(task.isComplete).toBe(false);
     });
   });
 });

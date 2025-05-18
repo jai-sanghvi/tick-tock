@@ -107,6 +107,13 @@ describe("Task Manager", () => {
       expect(task.isImportant).toBe(true);
       expect(saveTasks).toHaveBeenCalledTimes(8);
     });
+
+    it("can toggle a task's completion and save updated tasks", () => {
+      const task = taskManager.tasks.find((task) => task.id === 3);
+      taskManager.editTask(3, "completion");
+      expect(task.isComplete).toBe(true);
+      expect(saveTasks).toHaveBeenCalledTimes(9);
+    });
   });
 
   it("can rename a list and saves updated lists", () => {

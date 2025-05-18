@@ -4,6 +4,7 @@ export default class Task {
     this.title = title;
     this.description = "";
     this.dueDate = dueDate;
+    this.isComplete = false;
     this.isImportant = false;
     this.checklist = [];
     this.list = list.trim() === "" ? "Tasks" : list;
@@ -13,16 +14,16 @@ export default class Task {
     title = "",
     dueDate = "",
     description = "",
+    isComplete = false,
     isImportant = false,
     checklist = [],
   }) {
     this.title = title;
     this.dueDate = dueDate;
     this.description = description;
+    this.isComplete = isComplete;
     this.isImportant = isImportant;
     this.checklist = checklist;
-
-    return this;
   }
 
   editTitle(newTitle = "") {
@@ -39,5 +40,9 @@ export default class Task {
 
   toggleImportance() {
     this.isImportant = !this.isImportant;
+  }
+
+  toggleCompletion() {
+    this.isComplete = !this.isComplete;
   }
 }

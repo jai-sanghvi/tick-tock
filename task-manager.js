@@ -44,6 +44,9 @@ const taskManager = {
         case "importance":
           task.toggleImportance();
           break;
+        case "completion":
+          task.toggleCompletion();
+          break;
         default:
           saveNeeded = false;
       }
