@@ -9,7 +9,7 @@ import {
 } from "./storage";
 
 const taskManager = {
-  tasks: loadTasks(),
+  tasks: loadTasks().map((taskData) => new Task(taskData)),
   lists: loadLists(),
   nextId: loadNextId(),
 

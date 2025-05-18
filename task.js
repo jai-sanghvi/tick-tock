@@ -1,12 +1,21 @@
 export default class Task {
-  constructor({ id, title = "", dueDate = "", list = "Tasks" } = {}) {
+  constructor({
+    id,
+    title = "",
+    description = "",
+    dueDate = "",
+    isComplete = false,
+    isImportant = false,
+    checklist = [],
+    list = "Tasks",
+  } = {}) {
     this.id = id;
     this.title = title;
-    this.description = "";
+    this.description = description;
     this.dueDate = dueDate;
-    this.isComplete = false;
-    this.isImportant = false;
-    this.checklist = [];
+    this.isComplete = isComplete;
+    this.isImportant = isImportant;
+    this.checklist = checklist;
     this.list = list.trim() === "" ? "Tasks" : list;
   }
 
