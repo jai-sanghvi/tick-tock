@@ -38,6 +38,9 @@ const taskManager = {
         case "description":
           task.editDescription(newValue);
           break;
+        case "list":
+          task.editList(newValue);
+          break;
         case "dueDate":
           task.editDueDate(newValue);
           break;
@@ -72,12 +75,17 @@ const taskManager = {
   },
 
   renameList(listName, newName) {
-    if (listName !== "Tasks") {
-      if (this.lists.includes(listName)) {
-        const index = this.lists.indexOf(listName);
-        this.lists[index] = newName;
-        saveLists(this.lists);
-      }
+    if (
+      listName !== "Tasks" &&
+      this.lists.includes(listName) &&
+      !this.lists.includes(newName)
+    ) {
+      const index = this.lists.indexOf(listName);
+      this.lists[index] = newName;
+      saveLists(this.lists);
+      return true;
+    } else {
+      return false;
     }
   },
 };

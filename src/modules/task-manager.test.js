@@ -114,6 +114,13 @@ describe("Task Manager", () => {
       expect(task.isComplete).toBe(true);
       expect(saveTasks).toHaveBeenCalledTimes(9);
     });
+
+    it("can edit a task's list and save updated tasks", () => {
+      const task = taskManager.tasks.find((task) => task.id === 3);
+      taskManager.editTask(3, "list", "new list");
+      expect(task.list).toBe("new list");
+      expect(saveTasks).toHaveBeenCalledTimes(10);
+    });
   });
 
   it("can rename a list and saves updated lists", () => {
@@ -128,5 +135,13 @@ describe("Task Manager", () => {
     taskManager.renameList("Tasks", "something else");
     expect(taskManager.lists.includes("Tasks")).toBe(true);
     expect(taskManager.lists.includes("something else")).toBe(false);
+  });
+
+  it("does not rename a list if the new name already exists", () => {
+    taskManager.addList("My list");
+
+    taskManager.renameList("My list", "School");
+    expect(taskManager.lists.includes("My list")).toBe(true);
+    expect(taskManager.lists.includes("School")).toBe(true);
   });
 });

@@ -29,6 +29,7 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
+    "@jai-sanghvi/dropdown": "^1.0.1",
     "date-fns": "^4.1.0"
   }
 }

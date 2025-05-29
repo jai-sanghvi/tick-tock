@@ -86,12 +86,13 @@ describe("Task", () => {
           isImportant: true,
           isComplete: true,
           checklist: [],
+          list: "new list",
         },
         expectation: {
           id: 1,
           title: "modified test task title",
           dueDate: "2025-11-15",
-          list: "Tasks",
+          list: "new list",
           description: "test task description added after modification",
           isImportant: true,
           isComplete: true,
@@ -131,6 +132,26 @@ describe("Task", () => {
 
       task.editDescription("another new description");
       expect(task.description).toBe("another new description");
+    });
+
+    it("edits task list", () => {
+      const task = new Task({
+        id: 1,
+        title: "test task",
+        dueDate: "2025-10-20",
+      });
+
+      task.editList("new list");
+      expect(task.list).toBe("new list");
+
+      task.editList("");
+      expect(task.list).toBe("Tasks");
+
+      task.editList("another new list");
+      expect(task.list).toBe("another new list");
+
+      task.editList();
+      expect(task.list).toBe("Tasks");
     });
 
     it("edits task due date", () => {

@@ -1,32 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <title>TickTock</title>
-</head>
-<body>
-  <main>
-    <aside id="sidebar">
-      <ul id="categories-container"></ul>
-      <button type="button" id="new-list"><span>&#43;</span>New list</button>
-    </aside>
-    <section id="tasks">
-      <h2 id="list-title"></h2>
-      <div class="tasks-container">
-        <div id="active-tasks"></div>
-        <details id="completed-tasks" open></details>
-      </div>
-      <form id="task-input">
-        <span id="add-task-icon">&#43;</span>
-        <input type="text" name="title" id="title" placeholder="Add a task" autocomplete="off" required>
-        <input type="hidden" name="list" id="list" value="default">
-        <button type="button" id="date-picker-button" title="Add due date">&#128197;<input type="date" name="duedate" id="duedate"></button>
-      </form>
-    </section>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="./assets/tick-tock-logo.png"
+      type="image/x-icon"
+    />
+    <title>TickTock</title>
+  </head>
+  <body>
+    <main>
+      <aside id="lists">
+        <button type="button" id="new-list-button">
+          <img src="./assets/plus.svg" width="20" height="20" alt="add" />
+          <span>New list</span>
+        </button>
+      </aside>
+      <section id="tasks">
+        <header>
+          <h2 id="current-list-title">Tasks</h2>
+          <div>
+            <div id="list-settings-container" class="dd-container">
+              <input
+                type="image"
+                src="./assets/menu-vertical.svg"
+                alt="list settings"
+                width="20"
+                height="20"
+                class="dd-toggle dd-click"
+              />
+              <ul class="dd-content">
+                <li id="rename-list-button">
+                  <img
+                    src="./assets/rename.svg"
+                    alt=""
+                    width="20"
+                    height="20"
+                  />
+                  <span>Rename List</span>
+                </li>
+                <li id="delete-list-button">
+                  <img
+                    src="./assets/trash-bin.svg"
+                    alt=""
+                    width="20"
+                    height="20"
+                  />
+                  <span>Delete List</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <form id="task-input">
+          <button type="submit">
+            <img src="./assets/plus.svg" width="20" height="20" alt="add" />
+          </button>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Add a task"
+            autocomplete="off"
+            required
+          />
+          <button type="button" id="date-picker-button" title="Add due date">
+            <img
+              src="./assets/calendar.svg"
+              width="20"
+              height="20"
+              alt="calendar"
+            />
+            <input type="date" name="duedate" id="duedate" />
+          </button>
+        </form>
+      </section>
+      <!-- <aside id="task-details"></aside> -->
+    </main>
+  </body>
 </html>
