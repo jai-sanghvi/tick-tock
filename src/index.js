@@ -29,3 +29,12 @@ taskInput.addEventListener("submit", handleTaskInput);
 
 const datePickerButton = document.querySelector("#date-picker-button");
 datePickerButton.addEventListener("click", showDatePicker);
+
+const dueDateInput = document.querySelector("input#duedate");
+dueDateInput.addEventListener("change", () => {
+  if (dueDateInput.value !== "") {
+    datePickerButton.classList.add("duedate-selected");
+  } else {
+    datePickerButton.classList.remove("duedate-selected");
+  }
+});

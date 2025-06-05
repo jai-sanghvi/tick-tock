@@ -5,11 +5,14 @@ import checkFilled from "../assets/check-circle.svg";
 import star from "../assets/star.svg";
 import starOutline from "../assets/star-outline.svg";
 import calendar from "../assets/calendar.svg";
+import plusIcon from "../assets/plus.svg";
+import trashIcon from "../assets/trash-bin.svg";
 import { format } from "date-fns";
 
 let currentList = "Tasks";
 let isCurrentListDynamic = false;
 const currentListTitleElement = document.querySelector("#current-list-title");
+let currentTaskDetails = null;
 const addTaskForm = document.querySelector("form#task-input");
 
 export function renderTasks(list = "Tasks") {
@@ -102,6 +105,11 @@ function appendUpdatedTasks(list) {
     completeButton.addEventListener("click", () => {
       taskManager.editTask(task.id, "completion");
       renderTasks(currentList);
+
+      if (currentTaskDetails === task) {
+        document.querySelector("#task-details").remove();
+        viewTaskDetails(currentTaskDetails);
+      }
     });
     taskElement.appendChild(completeButton);
 
@@ -130,8 +138,8 @@ function appendUpdatedTasks(list) {
       dueDateElement.classList.add("duedate");
 
       const calendarIcon = document.createElement("img");
-      calendarIcon.style.width = "15px";
-      calendarIcon.style.height = "15px";
+      calendarIcon.setAttribute("width", "15");
+      calendarIcon.setAttribute("height", "15");
       calendarIcon.setAttribute("alt", "calendar icon");
       calendarIcon.setAttribute("src", calendar);
       dueDateElement.appendChild(calendarIcon);
@@ -173,6 +181,11 @@ function appendUpdatedTasks(list) {
       taskManager.editTask(task.id, "importance");
       renderTasks(currentList);
       renderLists();
+
+      if (currentTaskDetails === task) {
+        document.querySelector("#task-details").remove();
+        viewTaskDetails(currentTaskDetails);
+      }
     });
     taskElement.appendChild(importanceButton);
 
@@ -182,6 +195,22 @@ function appendUpdatedTasks(list) {
     } else {
       incompleteTasksContainer.appendChild(taskElement);
     }
+
+    taskElement.addEventListener("click", (e) => {
+      if (e.target !== importanceButton && e.target !== completeButton) {
+        if (currentTaskDetails === task) {
+          document.querySelector("#task-details").remove();
+          currentTaskDetails = null;
+          document.querySelector("#tasks").style.width = "80%";
+        } else if (!currentTaskDetails) {
+          viewTaskDetails(task);
+        } else {
+          document.querySelector("#task-details").remove();
+          currentTaskDetails = null;
+          viewTaskDetails(task);
+        }
+      }
+    });
   }
 
   tasksContainer.appendChild(incompleteTasksContainer);
@@ -324,6 +353,13 @@ export function createNewListInput() {
 }
 
 function changeList(list = "Tasks", dynamic = false) {
+  if (currentList !== list || isCurrentListDynamic !== dynamic) {
+    if (currentTaskDetails) {
+      document.querySelector("#task-details").remove();
+      currentTaskDetails = null;
+      document.querySelector("#tasks").style.width = "80%";
+    }
+  }
   currentList = list;
   isCurrentListDynamic = dynamic;
   renderTasks(currentList);
@@ -458,4 +494,262 @@ export function handleTaskInput(event) {
 export function showDatePicker() {
   const dueDateInput = document.querySelector("input#duedate");
   dueDateInput.showPicker();
+}
+
+function viewTaskDetails(task) {
+  currentTaskDetails = task;
+
+  // create container
+  const taskDetailsContainer = document.createElement("aside");
+  taskDetailsContainer.id = "task-details";
+
+  document.querySelector("#tasks").style.width = "55%";
+
+  const inputsContainer = document.createElement("div");
+  inputsContainer.classList.add("inputs-container");
+
+  // create close button
+  const closeButtonContainer = document.createElement("div");
+  closeButtonContainer.id = "close-button";
+  closeButtonContainer.style.justifySelf = "end";
+  closeButtonContainer.addEventListener("click", () => {
+    taskDetailsContainer.remove();
+    document.querySelector("#tasks").style.width = "80%";
+    currentTaskDetails = null;
+  });
+
+  const closeButton = document.createElement("img");
+  closeButton.setAttribute("src", plusIcon);
+  closeButton.setAttribute("width", "20");
+  closeButton.setAttribute("height", "20");
+  closeButton.style.rotate = "45deg";
+
+  closeButtonContainer.appendChild(closeButton);
+  inputsContainer.appendChild(closeButtonContainer);
+
+  // create task title input, importance and completion button
+
+  const taskElement = document.createElement("div");
+  taskElement.classList.add("task-edit");
+
+  // create complete task button
+  const completeButton = document.createElement("input");
+  completeButton.classList.add("complete-button");
+  completeButton.setAttribute("type", "image");
+  completeButton.setAttribute("alt", "complete task toggle");
+  completeButton.setAttribute(
+    "src",
+    task.isComplete ? checkFilled : circleOutline,
+  );
+  completeButton.setAttribute("width", "25");
+  completeButton.setAttribute("height", "25");
+
+  completeButton.addEventListener("mouseenter", () => {
+    if (!task.isComplete) {
+      completeButton.setAttribute("src", checkOutline);
+    }
+  });
+
+  completeButton.addEventListener("mouseleave", () => {
+    if (!task.isComplete) {
+      completeButton.setAttribute("src", circleOutline);
+    }
+  });
+
+  completeButton.addEventListener("click", () => {
+    taskManager.editTask(task.id, "completion");
+    renderTasks(currentList);
+    taskDetailsContainer.remove();
+    viewTaskDetails(task);
+  });
+
+  taskElement.appendChild(completeButton);
+
+  // create task title
+  const titleInput = document.createElement("input");
+  titleInput.setAttribute("type", "text");
+  titleInput.value = task.title;
+
+  if (task.isComplete) {
+    titleInput.classList.add("striked-out");
+  }
+
+  titleInput.addEventListener("blur", () => {
+    if (titleInput.value !== "") {
+      taskManager.editTask(task.id, "title", titleInput.value);
+      renderTasks(currentList);
+    } else {
+      titleInput.value = task.title;
+    }
+  });
+
+  taskElement.appendChild(titleInput);
+
+  // create importance button
+  const importanceButton = document.createElement("input");
+  importanceButton.classList.add("importance-button");
+  importanceButton.setAttribute("type", "image");
+  importanceButton.setAttribute("src", task.isImportant ? star : starOutline);
+  importanceButton.setAttribute(
+    "title",
+    task.isImportant ? "Remove importance" : "Mark as important",
+  );
+  importanceButton.setAttribute("width", "20");
+  importanceButton.setAttribute("height", "20");
+  importanceButton.addEventListener("click", () => {
+    taskManager.editTask(task.id, "importance");
+    renderTasks(currentList);
+    renderLists();
+    taskDetailsContainer.remove();
+    viewTaskDetails(task);
+  });
+  taskElement.appendChild(importanceButton);
+
+  inputsContainer.appendChild(taskElement);
+
+  // create description input
+  const descriptionInput = document.createElement("textarea");
+  descriptionInput.classList.add("description-edit");
+  descriptionInput.setAttribute("placeholder", "Add description");
+  descriptionInput.setAttribute("rows", "3");
+  descriptionInput.value = task.description;
+  descriptionInput.addEventListener("blur", () => {
+    taskManager.editTask(task.id, "description", descriptionInput.value);
+  });
+
+  inputsContainer.appendChild(descriptionInput);
+
+  // create duedate input
+  const dueDateButton = document.createElement("button");
+  dueDateButton.setAttribute("type", "button");
+  dueDateButton.classList.add("due-date-edit");
+
+  const calendarIcon = document.createElement("img");
+  calendarIcon.setAttribute("width", "20");
+  calendarIcon.setAttribute("height", "20");
+  calendarIcon.setAttribute("alt", "calendar icon");
+  calendarIcon.setAttribute("src", calendar);
+  dueDateButton.appendChild(calendarIcon);
+
+  const dueDateText = document.createElement("span");
+
+  if (task.dueDate) {
+    const ONE_DAY = 86400000;
+    const currentDate = new Date();
+    const dueDate = new Date(task.dueDate);
+
+    [currentDate, dueDate].forEach((date) => date.setHours(0, 0, 0, 0));
+
+    const timeDiff = dueDate - currentDate;
+    const isOverdue = timeDiff < 0 && !task.isComplete;
+
+    if (timeDiff === 0) {
+      dueDateText.textContent = "Due Today";
+    } else if (timeDiff === ONE_DAY) {
+      dueDateText.textContent = "Due Tomorrow";
+    } else {
+      const formatString =
+        currentDate.getFullYear() === dueDate.getFullYear()
+          ? "E, do MMM"
+          : "E, do MMM, yyyy";
+      dueDateText.textContent = `Due ${format(dueDate, formatString)}`;
+    }
+
+    if (isOverdue) {
+      dueDateText.classList.add("overdue");
+    }
+  } else {
+    dueDateText.textContent = "Add due date";
+  }
+
+  const dueDateInput = document.createElement("input");
+  dueDateInput.setAttribute("type", "date");
+  dueDateInput.addEventListener("input", () => {
+    taskManager.editTask(task.id, "dueDate", dueDateInput.value);
+    renderTasks(currentList);
+    renderLists();
+    taskDetailsContainer.remove();
+    viewTaskDetails(task);
+  });
+
+  dueDateButton.addEventListener("click", () => {
+    dueDateInput.showPicker();
+  });
+
+  dueDateButton.appendChild(dueDateInput);
+  dueDateButton.appendChild(dueDateText);
+
+  inputsContainer.appendChild(dueDateButton);
+
+  taskDetailsContainer.appendChild(inputsContainer);
+
+  // create delete task button
+  const deleteTaskButton = document.createElement("button");
+  deleteTaskButton.setAttribute("type", "button");
+  deleteTaskButton.classList.add("delete-task-button");
+  deleteTaskButton.addEventListener("click", () => {
+    handleDeleteTask(task);
+  });
+
+  const deleteIcon = document.createElement("img");
+  deleteIcon.setAttribute("width", "20");
+  deleteIcon.setAttribute("height", "20");
+  deleteIcon.setAttribute("alt", "trash icon");
+  deleteIcon.setAttribute("src", trashIcon);
+  deleteTaskButton.appendChild(deleteIcon);
+
+  const deleteTaskText = document.createElement("span");
+  deleteTaskText.textContent = "Delete Task";
+  deleteTaskButton.appendChild(deleteTaskText);
+
+  taskDetailsContainer.appendChild(deleteTaskButton);
+
+  document.querySelector("main").appendChild(taskDetailsContainer);
+}
+
+function handleDeleteTask(task) {
+  const dialog = document.createElement("dialog");
+  dialog.classList.add("delete-task-dialog");
+  dialog.addEventListener("close", handleDialogClose);
+
+  const p = document.createElement("p");
+  p.textContent = `"${task.title}" will be permanently deleted`;
+
+  const buttonsContainer = document.createElement("div");
+
+  const deleteButton = document.createElement("button");
+  deleteButton.setAttribute("type", "button");
+  deleteButton.classList.add("delete-button");
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", handleButtonClick);
+
+  const cancelButton = document.createElement("button");
+  cancelButton.setAttribute("type", "button");
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", handleButtonClick);
+
+  dialog.appendChild(p);
+  buttonsContainer.appendChild(cancelButton);
+  buttonsContainer.appendChild(deleteButton);
+  dialog.appendChild(buttonsContainer);
+  document.body.appendChild(dialog);
+
+  dialog.showModal();
+
+  function handleButtonClick(e) {
+    if (e.target === deleteButton) {
+      taskManager.deleteTask(task.id);
+      document.querySelector("#task-details").remove();
+      document.querySelector("#tasks").style.width = "80%";
+      currentTaskDetails = null;
+      renderTasks(currentList);
+      renderLists();
+    }
+
+    dialog.close();
+  }
+
+  function handleDialogClose() {
+    dialog.remove();
+  }
 }
